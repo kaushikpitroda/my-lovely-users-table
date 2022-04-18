@@ -16,7 +16,7 @@ Activate the plugin from admin and check output by http://www.domain.com/my-love
 
 As a first step, simply require the package via composer
 
-```composer require inpsyde/my-lovely-users-table``` 
+```composer require kaushikpitroda/my-lovely-users-table``` 
 
 ### Without Composer
 
@@ -27,8 +27,4 @@ Instead, please look at the [WordPress Codex on MU-Plugins](https://codex.wordpr
 
 ## License and Copyright
 
-Copyright (c) 2020 Inpsyde GmbH.
-
-_WP Stash_ code is licensed under [MIT license](./LICENSE).
-
-The team at [Inpsyde](https://inpsyde.com/) is engineering the Web since 2006.
+Copyright (c) 2022 Inpsyde GmbH.
