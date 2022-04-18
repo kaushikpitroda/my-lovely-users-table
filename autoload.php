@@ -22,4 +22,4 @@ spl_autoload_register(static function ($class) {
     if (file_exists($possible_file)) {
         require $possible_file;
     }
-}); 
+});

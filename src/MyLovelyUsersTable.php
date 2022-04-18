@@ -34,6 +34,20 @@ final class MyLovelyUsersTable
      */
     protected static $instance = null;
 
+    /**
+     * MyLovelyUsersTable constructor.
+     *
+     */
+    private function __construct()
+    {
+        add_action('init', [$this, 'usersRewriteRules']);
+        add_action('wp_enqueue_scripts', [$this, 'enqueueUsersFrontendScript']);
+    }
+
+    /**
+     * @return MyLovelyUsersTable
+     *
+     */
     public static function getInstance()
     {
 
@@ -43,7 +57,7 @@ final class MyLovelyUsersTable
         return self::$instance;
     }
 
-	/**
+    /**
      * Get Frontend Javascript file
      * @return js file path
      */
@@ -59,7 +73,7 @@ final class MyLovelyUsersTable
         wp_localize_script('users-script', "users", $variables);
     }
 
-	/**
+    /**
      * Change Rewrite path
      */
     public function usersRewriteRules()
@@ -67,23 +81,22 @@ final class MyLovelyUsersTable
         add_rewrite_rule('my-lovely-users-table/?([^/]*)', 'index.php?pagename=my-lovely-users-table&userId=$matches[1]', 'top');
     }
 
-	/**
+    /**
      * Load user list and user details
      * @return user's template in html
      */
-    function usersPluginDisplay()
+    public function usersPluginDisplay()
     {
         $this->pageName = get_query_var('pagename');
         $this->userId = get_query_var('userId');
-        if ('my-lovely-users-table' == $this->pageName) {
-            if ($this->userId != '') {
-                add_filter('template_include', static function () {
+        if ('my-lovely-users-table' === $this->pageName) {
+            if ($this->userId !== '') {
+                add_filter('template_include', function () {
 
-                    $userId = get_query_var('userId');
                     $userInfo = new MyUserDetails();
-                    $jsonArray = $userInfo->getApiCall($userId);
+                    $jsonArray = $userInfo->getApiCall($this->userId);
                     $userDetails = new MyUserDetailHTML();
-                    echo $userDetails->getUserDetailHTML($jsonArray, $userId);
+                    echo $userDetails->getUserDetailHTML($jsonArray, $this->userId);
                     return false;
                 });
             } else {
@@ -91,9 +104,9 @@ final class MyLovelyUsersTable
 
                         get_header();
                         $users = new MyUserListTable();
-                        $usersHTML = new MyUserListHTML();
+                        $userHtml = new MyUserListHTML();
                         $json = $users->getUserListAPICall();
-                        echo $usersHTML->getUserListHTML($json);
+                        echo $userHtml->getUserListHTML($json);
                         get_footer();
                         return false;
                     });
@@ -101,19 +114,17 @@ final class MyLovelyUsersTable
         }
     }
 
-	/**
+    /**
      * Call different action and filter for displaying plugin
      */
     public function pluginsOnLoad()
     {
-        add_action('init', [$this, 'usersRewriteRules']);
-        add_action('wp_enqueue_scripts', [$this, 'enqueueUsersFrontendScript']);
         add_filter('template_redirect', [$this, 'users404Override']);
         add_filter('template_redirect', [$this, 'usersPluginDisplay']);
         add_filter('query_vars', [$this, 'usersPluginQueryVars']);
     }
 
-	/**
+    /**
      * Override 404
      * @return bool
      */
@@ -122,14 +133,14 @@ final class MyLovelyUsersTable
         global $wp_query;
         $pagename = get_query_var('pagename');
         $userId = get_query_var('userId');
-        if ('my-lovely-users-table' == $pagename) {
+        if ('my-lovely-users-table' === $pagename) {
             status_header(200);
             $wp_query->is_404 = false;
         }
         return true;
     }
 
-	/**
+    /**
      * Get query string parameters
      * @return string
      */
