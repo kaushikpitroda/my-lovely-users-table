@@ -14,7 +14,6 @@
         }
     ],
     "homepage": "https://github.com/kaushikpitroda/my-lovely-users-table",
-    "minimum-stability": "dev",
     "require": {
         "php": ">=7.0"
     }
